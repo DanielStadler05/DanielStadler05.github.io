@@ -1,5 +1,5 @@
 var el = document.getElementById("email");
-var addr = "danielstad05";
-addr = addr + "@" + "gmail.com";
+var addr = "email";
+addr = addr + "@" + "danielstadler.se";
 el.href = "mailto:" + addr;
 el.innerText = addr;
