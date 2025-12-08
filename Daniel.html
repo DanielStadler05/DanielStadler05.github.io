@@ -1,0 +1,52 @@
+<html><head>
+    <meta charset="utf-8">
+    <title>Daniel Stadler</title>
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="Portfolio of Daniel Stadler, aspiring developer">
+    <link rel="stylesheet" href="style.css">
+    <script src="dayjs.js"></script>
+  </head>
+  <body>
+    <div id="header">
+      <h1 id="header__name">
+        Daniel <br>
+        Stadler
+      </h1>
+
+      <h1 id="header__title">Aspiring developer</h1>
+    
+      <p style="color: #ffffff;">
+        Age = <span id="age">Calculating...</span>.
+      </p>
+    </div>
+
+
+    <div class="flex_container">
+      <h1 class="info__title">Me</h1>
+      <p>
+        Ever since I was a child I have had a lively passion for technology. I currently use C# and Python for most of my projects, but I am always open to learning new languages and technologies.
+      </p>
+    </div>
+
+    <footer style="text-align: center;">
+      You can contact me at
+      <a style="text-decoration: none; color: #000;" id="email" href=""></a>
+    </footer>
+
+    <h1 style="font-size: 13px; text-align: center; color: #929292; margin-top: 50px;margin-bottom: 30px;font-weight: 300; ">
+      Daniel Stadler ©
+    </h1>
+
+    <script src="Email.js"></script>
+
+    <script>
+        let ageEl = document.getElementById("age");
+        
+        setInterval(() => {
+            let time = dayjs().diff(dayjs(1123286400000), "year", true);
+            ageEl.innerText = time.toString().substring(0, 12);
+        }, 50);
+    </script>
+
+</body></html>
