@@ -1,4 +1,5 @@
-<html><head>
+<html>
+  <head>
     <meta charset="utf-8">
     <title>Daniel Stadler</title>
     <meta name="viewport" content="width=device-width">
@@ -7,61 +8,7 @@
     <link rel="icon" type="image/favicon.ico" href="/public/favicon.ico"/>
     <link rel="stylesheet" href="/private/style.css">
     <script src="/private/js/dayjs.js"></script>
-
-<script>
-async function loadInvestment() {
-
-  const fundRes = await fetch(
-    "https://corsproxy.io/?https://query1.finance.yahoo.com/v8/finance/chart/0P00017J97"
-  );
-  const fundData = await fundRes.json();
-
-  const currentPriceUSD =
-    fundData.chart.result[0].meta.regularMarketPrice;
-
-  const fxRes = await fetch(
-    "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json"
-  );
-  const fxData = await fxRes.json();
-
-  const usdToSek = fxData.usd.sek;
-
-  const purchases = [
-    { amount: 10.51, investedSEK: 3191.18, kurs: 295.969 },
-    { amount: 68.54, investedSEK: 38974.22, kurs: 568.634 },
-    { amount: 83.69, investedSEK: 40003.75, kurs: 477.999 }
-  ];
-
-  let totalShares = 0;
-  let investedSEK = 0;
-
-  purchases.forEach(p => {
-    totalShares += p.amount;
-    investedSEK += p.investedSEK;  
-  });
-
-  const portfolioValueSEK = totalShares * currentPriceUSD * usdToSek;
-  const profitSEK = portfolioValueSEK - investedSEK;
-
-document.getElementById("invested").textContent =
-  investedSEK.toFixed(2) + " SEK";
-
-document.getElementById("value").textContent =
-  portfolioValueSEK.toFixed(2) + " SEK";
-
-document.getElementById("profit").textContent =
-  profitSEK.toFixed(2) + " SEK";
-  const profitEl = document.getElementById("profit");
-  profitEl.textContent = profitSEK.toFixed(2) + " SEK";
-  profitEl.style.color = profitSEK >= 0 ? "green" : "red";
-
-document.getElementById("return").textContent =
-  ((profitSEK / investedSEK) * 100).toFixed(2);
-}
-
-loadInvestment();
-</script>
-</head>
+  </head>
 
   <nav class="nav">
     <div class="dropdown">
@@ -83,14 +30,30 @@ loadInvestment();
       <h1 id="header__title">Aspiring developer</h1>
     </div>
 
-    <div class="flex_container">
-      <div id="investmentStats">
-        <p>Total invested: <span id="invested"></span></p>
-        <p>Current value: <span id="value"></span></p>
-        <p>Profit: <span id="profit"></span></p>
-        <p>Return: <span id="return"></span>%</p>
-      </div>
-    </div>
+
+  <h1>Portfolio Overview</h1>
+  <div id="portfolio">Loading...</div>
+
+  <script>
+    fetch('portfolio.json')
+      .then(res => res.json())
+      .then(data => {
+        const html = `
+          Stock Price (USD): $${data.price_usd.toFixed(2)}<br>
+          USD → SEK: ${data.usd_sek.toFixed(2)}<br>
+          Total Shares: ${data.total_shares}<br>
+          Invested (SEK): ${data.invested.toFixed(2)}<br>
+          Current Value (SEK): ${data.value.toFixed(2)}<br>
+          Profit (SEK): ${data.profit.toFixed(2)}<br>
+          Return: ${data.return_percent.toFixed(2)}%
+        `;
+        document.getElementById('portfolio').innerHTML = html;
+      })
+      .catch(err => {
+        document.getElementById('portfolio').textContent = "Error loading portfolio";
+        console.error(err);
+      });
+  </script>
 
     <footer style="font-size: 13px; text-align: center; color: #929292; margin-top: 50px;margin-bottom: 30px;font-weight: 300; ">
       Daniel Stadler ©
