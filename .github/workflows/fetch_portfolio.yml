@@ -21,7 +21,7 @@ jobs:
         run: pip install yfinance requests pandas
 
       - name: Run portfolio script
-        run: python fetch_portfolio.py
+        run: python main.py
 
       - name: Commit portfolio.json
         run: |
