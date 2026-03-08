@@ -3,33 +3,37 @@ name: Fetch Portfolio
 on:
   schedule:
     - cron: '0 15 * * 1-5'  # weekdays at 15:00 UTC
-  workflow_dispatch:  # manual trigger
+  workflow_dispatch:  # allows manual trigger
 
 jobs:
-  update:
+  update_portfolio:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout repo
       - uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      # Step 2: Set up Python
+      - uses: actions/setup-python@v4
         with:
           python-version: 3.11
 
+      # Step 3: Install dependencies
       - name: Install dependencies
         run: pip install yfinance requests pandas
 
+      # Step 4: Run your Python script
       - name: Run portfolio script
         run: python main.py
 
-      - name: Commit portfolio.json
+      # Step 5: Commit and push changes using PAT
+      - name: Commit and push portfolio.json
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          git remote set-url origin https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}.git
           git add portfolio.json
           git commit -m "Update portfolio" || echo "No changes"
-           - name: Pull latest changes
-          run: git pull --rebase origin ${{ github.ref_name }}
-            - name: Push changes
-              run: git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
+          git push origin main
