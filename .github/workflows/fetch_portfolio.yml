@@ -1,0 +1,32 @@
+name: Fetch Portfolio
+
+on:
+  schedule:
+    - cron: '0 15 * * 1-5'  # weekdays at 15:00 UTC
+  workflow_dispatch:  # manual trigger
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: pip install yfinance requests pandas
+
+      - name: Run portfolio script
+        run: python fetch_portfolio.py
+
+      - name: Commit portfolio.json
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add portfolio.json
+          git commit -m "Update portfolio" || echo "No changes"
+          git push
