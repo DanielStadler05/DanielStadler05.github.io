@@ -7,33 +7,8 @@
     <link rel="icon" type="image/favicon.ico" href="/public/favicon.ico"/>
     <link rel="stylesheet" href="/private/style.css">
     <script src="/private/js/dayjs.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-fetch("https://query1.finance.yahoo.com/v8/finance/chart/0P00017J97")
-.then(r => r.json())
-.then(data => {
-
-  const result = data.chart.result[0]
-
-  const timestamps = result.timestamp
-  const prices = result.indicators.quote[0].close
-
-  const labels = timestamps.map(t => new Date(t*1000).toLocaleDateString())
-
-  new Chart(document.getElementById("chart"), {
-    type: "line",
-    data: {
-      labels: labels,
-      datasets: [{
-        label: "Fund price",
-        data: prices
-      }]
-    }
-  })
-
-})
-</script>
   </head>
+  
   <body>
     <div id="header">
       <h1 id="header__name">
@@ -44,7 +19,6 @@ fetch("https://query1.finance.yahoo.com/v8/finance/chart/0P00017J97")
       <h1 id="header__title">Aspiring developer</h1>
     </div>
 
-
     <div class="flex_container">
       <h1 class="info__title">Me</h1>
       <p>
@@ -53,7 +27,6 @@ fetch("https://query1.finance.yahoo.com/v8/finance/chart/0P00017J97")
         <span id="age">Calculating...</span> years old.
       </p>
     </div>
-    <canvas id="chart"></canvas>
 
     <footer style="text-align: center;">
       You can contact me at
