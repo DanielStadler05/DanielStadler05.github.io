@@ -61,8 +61,18 @@ document.getElementById("return").textContent =
 
 loadInvestment();
 </script>
+</head>
 
-  </head>
+  <nav class="nav">
+    <div class="dropdown">
+      <button class="dropbtn">☰</button>
+      <div class="dropdown-content">
+        <a href="/index.html">Home</a>
+        <a href="/portfolio.html">Portfolio</a>
+      </div>
+    </div>
+  </nav>
+   
   <body>
     <div id="header">
       <h1 id="header__name">
@@ -74,12 +84,6 @@ loadInvestment();
     </div>
 
     <div class="flex_container">
-      <h1 class="info__title">Me</h1>
-      <p>
-        Ever since I was a child I have had a lively passion for technology. 
-        I currently use C# and Python for most of my projects, but I am always open to learning new languages and technologies. I am currently       
-        <span id="age">Calculating...</span> years old.
-      </p>
       <div id="investmentStats">
         <p>Total invested: <span id="invested"></span></p>
         <p>Current value: <span id="value"></span></p>
@@ -88,23 +92,8 @@ loadInvestment();
       </div>
     </div>
 
-    <footer style="text-align: center;">
-      You can contact me at
-      <a style="text-decoration: none; color: #000;" id="email" href=""></a>
+    <footer style="font-size: 13px; text-align: center; color: #929292; margin-top: 50px;margin-bottom: 30px;font-weight: 300; ">
+      Daniel Stadler ©
     </footer>
 
-    <h1 style="font-size: 13px; text-align: center; color: #929292; margin-top: 50px;margin-bottom: 30px;font-weight: 300; ">
-      Daniel Stadler ©
-    </h1>
-
-    <script src="/private/js/Email.js"></script>
-
-    <script>
-        let ageEl = document.getElementById("age");
-        
-        setInterval(() => {
-            let time = dayjs().diff(dayjs(1123286400000), "year", true);
-            ageEl.innerText = time.toString().substring(0, 12);
-        }, 50);
-    </script>
 </body></html>
