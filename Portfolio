@@ -1,0 +1,110 @@
+<html><head>
+    <meta charset="utf-8">
+    <title>Daniel Stadler</title>
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="Portfolio of Daniel Stadler, aspiring developer">
+    <link rel="icon" type="image/favicon.ico" href="/public/favicon.ico"/>
+    <link rel="stylesheet" href="/private/style.css">
+    <script src="/private/js/dayjs.js"></script>
+
+<script>
+async function loadInvestment() {
+
+  const fundRes = await fetch(
+    "https://corsproxy.io/?https://query1.finance.yahoo.com/v8/finance/chart/0P00017J97"
+  );
+  const fundData = await fundRes.json();
+
+  const currentPriceUSD =
+    fundData.chart.result[0].meta.regularMarketPrice;
+
+  const fxRes = await fetch(
+    "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json"
+  );
+  const fxData = await fxRes.json();
+
+  const usdToSek = fxData.usd.sek;
+
+  const purchases = [
+    { amount: 10.51, investedSEK: 3191.18, kurs: 295.969 },
+    { amount: 68.54, investedSEK: 38974.22, kurs: 568.634 },
+    { amount: 83.69, investedSEK: 40003.75, kurs: 477.999 }
+  ];
+
+  let totalShares = 0;
+  let investedSEK = 0;
+
+  purchases.forEach(p => {
+    totalShares += p.amount;
+    investedSEK += p.investedSEK;  
+  });
+
+  const portfolioValueSEK = totalShares * currentPriceUSD * usdToSek;
+  const profitSEK = portfolioValueSEK - investedSEK;
+
+document.getElementById("invested").textContent =
+  investedSEK.toFixed(2) + " SEK";
+
+document.getElementById("value").textContent =
+  portfolioValueSEK.toFixed(2) + " SEK";
+
+document.getElementById("profit").textContent =
+  profitSEK.toFixed(2) + " SEK";
+  const profitEl = document.getElementById("profit");
+  profitEl.textContent = profitSEK.toFixed(2) + " SEK";
+  profitEl.style.color = profitSEK >= 0 ? "green" : "red";
+
+document.getElementById("return").textContent =
+  ((profitSEK / investedSEK) * 100).toFixed(2);
+}
+
+loadInvestment();
+</script>
+
+  </head>
+  <body>
+    <div id="header">
+      <h1 id="header__name">
+        Daniel <br>
+        Stadler
+      </h1>
+
+      <h1 id="header__title">Aspiring developer</h1>
+    </div>
+
+    <div class="flex_container">
+      <h1 class="info__title">Me</h1>
+      <p>
+        Ever since I was a child I have had a lively passion for technology. 
+        I currently use C# and Python for most of my projects, but I am always open to learning new languages and technologies. I am currently       
+        <span id="age">Calculating...</span> years old.
+      </p>
+      <div id="investmentStats">
+        <p>Total invested: <span id="invested"></span></p>
+        <p>Current value: <span id="value"></span></p>
+        <p>Profit: <span id="profit"></span></p>
+        <p>Return: <span id="return"></span>%</p>
+      </div>
+    </div>
+
+    <footer style="text-align: center;">
+      You can contact me at
+      <a style="text-decoration: none; color: #000;" id="email" href=""></a>
+    </footer>
+
+    <h1 style="font-size: 13px; text-align: center; color: #929292; margin-top: 50px;margin-bottom: 30px;font-weight: 300; ">
+      Daniel Stadler ©
+    </h1>
+
+    <script src="/private/js/Email.js"></script>
+
+    <script>
+        let ageEl = document.getElementById("age");
+        
+        setInterval(() => {
+            let time = dayjs().diff(dayjs(1123286400000), "year", true);
+            ageEl.innerText = time.toString().substring(0, 12);
+        }, 50);
+    </script>
+</body></html>
