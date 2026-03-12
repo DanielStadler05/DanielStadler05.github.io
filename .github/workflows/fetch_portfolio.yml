@@ -2,7 +2,6 @@ name: Fetch Portfolio
 
 on:
   schedule:
-    - cron: '0 15 * * 1-5'  # weekdays at 15:00 UTC
   workflow_dispatch:  # allows manual trigger
 
 jobs:
