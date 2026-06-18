@@ -1,12 +1,22 @@
-html,body,p,h1,h2 {
-  font-family: system, -apple-system, BlinkMacSystemFont, "Helvetica Neue",
-    "Lucida Grande", "Segoe UI";
+html,
+body,
+p,
+h1,
+h2 {
+  font-family:
+    system,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Helvetica Neue",
+    "Lucida Grande",
+    "Segoe UI";
   margin: 0;
   padding: 0;
   color: #555;
 }
 
-html,body {
+html,
+body {
   background: #fafafa;
 }
 
@@ -84,9 +94,68 @@ html,body {
   width: 100%;
 }
 p {
-  margin: 10px 0; 
+  margin: 10px 0;
   max-width: 400px;
 }
+
+.content_section {
+  padding: 30px 0;
+}
+
+.folder_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.folder_card {
+  display: block;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  padding: 18px;
+  text-decoration: none;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
+}
+
+.folder_card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.folder_card h2 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+}
+
+.folder_card p {
+  margin: 0;
+  max-width: none;
+}
+
+.folder_list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.folder_list li {
+  margin-bottom: 10px;
+}
+
+.folder_list a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.folder_list a:hover {
+  text-decoration: underline;
+}
+
 .nav {
   position: absolute;
   top: 20px;
@@ -112,11 +181,13 @@ p {
   right: 0;
   background: white;
   min-width: 150px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   opacity: 0;
   transform: translateY(-5px);
   pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
 .dropdown-content a {
